@@ -11,24 +11,68 @@ color:white;
 font-family:Arial;
 text-align:center;
 }
+
 h1{margin-top:20px;}
-.box{margin:6px;font-size:20px;}
+
+#topInfo{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 20px;
+margin-top:20px;
+}
+
+#gun{
+font-size:48px;
+font-weight:bold;
+}
+
+#kalan{
+font-size:48px;
+font-weight:bold;
+color:red;
+}
+
 select{
+margin-top:15px;
 padding:6px;
 font-size:16px;
-margin:10px;
 }
-#clock{font-size:22px;margin:10px;}
-#countdownIftar,#countdownImsak{font-size:20px;margin:6px;}
-table{margin:20px auto;border-collapse:collapse;}
-td{border:1px solid #444;padding:8px;width:45px;}
-.passed{background:#1f7a1f;}
-.today{background:#c49b00;}
-.future{background:#222;}
+
+#imsak,#iftar{
+margin-top:10px;
+font-size:20px;
+}
+
+#countdownIftar,#countdownImsak{
+font-size:20px;
+margin-bottom:10px;
+}
+
+#ramazanList{
+width:90%;
+max-width:500px;
+margin:20px auto;
+text-align:left;
+}
+
+.dayItem{
+padding:6px;
+border-bottom:1px solid #333;
+}
+
+.passed{
+color:#7CFC00;
+}
+
 .star{
-position:absolute;width:3px;height:3px;background:white;
+position:absolute;
+width:3px;
+height:3px;
+background:white;
 animation:float 6s infinite linear;
 }
+
 @keyframes float{
 from{transform:translateY(100vh);}
 to{transform:translateY(-10vh);}
@@ -39,91 +83,96 @@ to{transform:translateY(-10vh);}
 
 <h1>🌙 Ramazan Antigravity</h1>
 
-<div id="clock"></div>
+<div id="topInfo">
+<div id="gun"></div>
+<div id="kalan"></div>
+</div>
 
-<select id="citySelect">
-<option value="Istanbul">İstanbul</option>
-<option value="Ankara">Ankara</option>
-<option value="Izmir">İzmir</option>
-<option value="Bursa">Bursa</option>
-<option value="Antalya">Antalya</option>
-<option value="Konya">Konya</option>
-<option value="Adana">Adana</option>
-<option value="Gaziantep">Gaziantep</option>
-</select>
+<select id="citySelect"></select>
 
-<div class="box" id="ramazanInfo"></div>
-<div class="box" id="kalanGun"></div>
-
-<div class="box" id="imsak"></div>
+<div id="imsak"></div>
 <div id="countdownImsak"></div>
 
-<div class="box" id="iftar"></div>
+<div id="iftar"></div>
 <div id="countdownIftar"></div>
 
 <h3>Ramazan Günleri</h3>
-<table id="ramazanTable"></table>
+<div id="ramazanList"></div>
 
 <script>
 
-// CANLI SAAT
-function updateClock(){
-let now=new Date();
-document.getElementById("clock").innerText=
-now.toLocaleDateString("tr-TR")+" "+now.toLocaleTimeString("tr-TR");
-}
-setInterval(updateClock,1000);
-updateClock();
+// TÜM İLLER
+const cities = [
+"Adana","Adıyaman","Afyonkarahisar","Ağrı","Aksaray","Amasya","Ankara",
+"Antalya","Ardahan","Artvin","Aydın","Balıkesir","Bartın","Batman",
+"Bayburt","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale",
+"Çankırı","Çorum","Denizli","Diyarbakır","Düzce","Edirne","Elazığ",
+"Erzincan","Erzurum","Eskişehir","Gaziantep","Giresun","Gümüşhane",
+"Hakkari","Hatay","Iğdır","Isparta","İstanbul","İzmir","Kahramanmaraş",
+"Karabük","Karaman","Kars","Kastamonu","Kayseri","Kilis","Kırıkkale",
+"Kırklareli","Kırşehir","Kocaeli","Konya","Kütahya","Malatya","Manisa",
+"Mardin","Mersin","Muğla","Muş","Nevşehir","Niğde","Ordu","Osmaniye",
+"Rize","Sakarya","Samsun","Siirt","Sinop","Sivas","Şanlıurfa","Şırnak",
+"Tekirdağ","Tokat","Trabzon","Tunceli","Uşak","Van","Yalova","Yozgat","Zonguldak"
+];
 
-// RAMAZAN HESAP
-const ramazanStart=new Date("2026-02-18");
-let today=new Date();
-let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
+const select = document.getElementById("citySelect");
 
-if(diffDays>0 && diffDays<=30){
-document.getElementById("ramazanInfo").innerText=
-"Ramazanın "+diffDays+". günü";
-document.getElementById("kalanGun").innerText=
-"Bitmesine "+(30-diffDays)+" gün kaldı";
-}else{
-document.getElementById("ramazanInfo").innerText=
-"Ramazan dönemi dışında";
-}
+// DEFAULT ISTANBUL
+let selectedCity = localStorage.getItem("city") || "İstanbul";
 
-// TABLO
-let table=document.getElementById("ramazanTable");
-let row=document.createElement("tr");
-for(let i=1;i<=30;i++){
-let cell=document.createElement("td");
-cell.innerText=i;
-if(i<diffDays){
-cell.className="passed";
-cell.innerText=i+" ✔";
-}else if(i===diffDays){
-cell.className="today";
-}else{
-cell.className="future";
-}
-row.appendChild(cell);
-if(i%10===0){
-table.appendChild(row);
-row=document.createElement("tr");
-}
-}
+cities.forEach(city=>{
+let option=document.createElement("option");
+option.value=city;
+option.textContent=city;
+if(city===selectedCity) option.selected=true;
+select.appendChild(option);
+});
 
-// ŞEHİR SEÇİMİ (DEFAULT ISTANBUL)
-let selectedCity=localStorage.getItem("city") || "Istanbul";
-document.getElementById("citySelect").value=selectedCity;
-
-document.getElementById("citySelect").addEventListener("change",function(){
+select.addEventListener("change",function(){
 localStorage.setItem("city",this.value);
 location.reload();
 });
 
-fetchTimings(selectedCity);
+// RAMAZAN TARİHİ (2026)
+const ramazanStart=new Date("2026-02-18");
+const totalDays=30;
+let today=new Date();
 
-function fetchTimings(city){
-fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Turkey&method=13`)
+let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
+
+if(diffDays>0 && diffDays<=30){
+document.getElementById("gun").innerText=diffDays+". Gün";
+document.getElementById("kalan").innerText=(30-diffDays)+" Gün Kaldı";
+}else{
+document.getElementById("gun").innerText="Ramazan Dışı";
+document.getElementById("kalan").innerText="";
+}
+
+// GÜN LİSTESİ
+const list=document.getElementById("ramazanList");
+
+for(let i=1;i<=30;i++){
+let date=new Date(ramazanStart);
+date.setDate(date.getDate()+i-1);
+
+let formatted=date.toLocaleDateString("tr-TR",{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+
+let div=document.createElement("div");
+div.className="dayItem";
+
+if(i<diffDays){
+div.classList.add("passed");
+div.innerText=i+" - "+formatted+" ✔";
+}else{
+div.innerText=i+" - "+formatted;
+}
+
+list.appendChild(div);
+}
+
+// VAKİT ÇEKME
+fetch(`https://api.aladhan.com/v1/timingsByCity?city=${selectedCity}&country=Turkey&method=13`)
 .then(res=>res.json())
 .then(data=>{
 const timings=data.data.timings;
@@ -134,9 +183,8 @@ document.getElementById("iftar").innerText="İftar: "+timings.Maghrib;
 startCountdown(timings.Fajr,"countdownImsak");
 startCountdown(timings.Maghrib,"countdownIftar");
 });
-}
 
-function startCountdown(timeStr,elementId){
+function startCountdown(timeStr,id){
 let parts=timeStr.split(":");
 setInterval(()=>{
 let now=new Date();
@@ -144,15 +192,12 @@ let target=new Date();
 target.setHours(parts[0]);
 target.setMinutes(parts[1]);
 target.setSeconds(0);
-
 if(target<now){target.setDate(target.getDate()+1);}
-
 let diff=target-now;
 let h=Math.floor(diff/(1000*60*60));
 let m=Math.floor((diff/(1000*60))%60);
 let s=Math.floor((diff/1000)%60);
-
-document.getElementById(elementId).innerText=
+document.getElementById(id).innerText=
 h+"s "+m+"d "+s+"sn kaldı";
 },1000);
 }

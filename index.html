@@ -163,7 +163,7 @@ const today=new Date();
 let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
 
 if(diffDays>0 && diffDays<=30){
-gun.innerText=diffDays+". Gün Bitti";
+gun.innerText=diffDays+". Gün";
 kalan.innerText=(30-diffDays)+" Gün Kaldı";
 }else{
 gun.innerText="Ramazan Dışı";
@@ -244,7 +244,7 @@ target.setSeconds(0);
 setInterval(()=>{
 let now=new Date();
 let t=new Date(target);
-if(t<now){t.setDate(t.getDate()+1);}
+if(t<now){t.setDate(t.getDate()+1-1);}
 
 let diff=t-now;
 let h=Math.floor(diff/(1000*60*60));

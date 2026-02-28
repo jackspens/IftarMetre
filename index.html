@@ -60,6 +60,7 @@ margin-top:5px;
 #iftar{
 color:#00ff7f;
 font-size:35px;
+font-weight:bold;
 }
 
 #countdownIftar{
@@ -163,7 +164,7 @@ let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
 
 if(diffDays>0 && diffDays<=30){
 gun.innerText=diffDays+". Gün Bitti";
-kalan.innerText=(30-diffDays)+"Gün Kaldı";
+kalan.innerText=(30-diffDays)+" Gün Kaldı";
 }else{
 gun.innerText="Ramazan Dışı";
 kalan.innerText="";

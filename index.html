@@ -55,6 +55,11 @@ font-weight:bold;
 margin-top:5px;
 }
 
+#Iftar{
+color:#00ff7f;
+font-size:35px;
+}
+
 #countdownIftar{
 color:#00ff7f;
 font-size:20px;
@@ -83,8 +88,8 @@ font-size:18px;
 #ramazanList{
 width:95%;
 margin:10px auto 30px auto;
-text-align:left;
-font-size:14px;
+text-align:center;
+font-size:16px;
 }
 
 .dayItem{
@@ -184,7 +189,20 @@ ramazanList.appendChild(div);
 }
 
 // ŞEHİRLER
-const cities=["İstanbul","Ankara","İzmir","Bursa","Antalya","Konya","Adana","Gaziantep"];
+const cities=[
+"İstanbul","Ankara","İzmir","Adana","Adıyaman","Afyonkarahisar","Ağrı","Aksaray","Amasya",
+"Antalya","Ardahan","Artvin","Aydın","Balıkesir","Bartın","Batman",
+"Bayburt","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale",
+"Çankırı","Çorum","Denizli","Diyarbakır","Düzce","Edirne","Elazığ",
+"Erzincan","Erzurum","Eskişehir","Gaziantep","Giresun","Gümüşhane",
+"Hakkari","Hatay","Iğdır","Isparta","Kahramanmaraş",
+"Karabük","Karaman","Kars","Kastamonu","Kayseri","Kilis","Kırıkkale",
+"Kırklareli","Kırşehir","Kocaeli","Konya","Kütahya","Malatya","Manisa",
+"Mardin","Mersin","Muğla","Muş","Nevşehir","Niğde","Ordu","Osmaniye",
+"Rize","Sakarya","Samsun","Siirt","Sinop","Sivas","Şanlıurfa","Şırnak",
+"Tekirdağ","Tokat","Trabzon","Tunceli","Uşak","Van","Yalova","Yozgat","Zonguldak"
+
+];
 let selectedCity=localStorage.getItem("city") || "İstanbul";
 
 cities.forEach(city=>{

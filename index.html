@@ -4,47 +4,30 @@
 <meta charset="UTF-8">
 <title>Ramazan Antigravity</title>
 <style>
-body {
-  margin:0;
-  background: radial-gradient(circle at bottom, #0b0c2a, #000);
-  color:white;
-  font-family: Arial;
-  text-align:center;
-  overflow-x:hidden;
+body{
+margin:0;
+background:radial-gradient(circle at bottom,#0b0c2a,#000);
+color:white;
+font-family:Arial;
+text-align:center;
+overflow-x:hidden;
 }
-
-h1 { margin-top:30px; }
-
-.box { margin:10px; font-size:22px; }
-
-#countdown { font-size:28px; margin:15px; }
-
-table {
-  margin:30px auto;
-  border-collapse: collapse;
+h1{margin-top:20px;}
+.box{margin:8px;font-size:20px;}
+#clock{font-size:22px;margin:10px;}
+#countdownIftar,#countdownImsak{font-size:22px;margin:10px;}
+table{margin:20px auto;border-collapse:collapse;}
+td{border:1px solid #444;padding:8px;width:45px;}
+.passed{background:#1f7a1f;}
+.today{background:#c49b00;}
+.future{background:#222;}
+.star{
+position:absolute;width:3px;height:3px;background:white;
+animation:float 6s infinite linear;
 }
-
-td {
-  border:1px solid #444;
-  padding:10px;
-  width:50px;
-}
-
-.passed { background:#1f7a1f; }
-.today { background:#c49b00; }
-.future { background:#222; }
-
-.star {
-  position:absolute;
-  width:3px;
-  height:3px;
-  background:white;
-  animation:float 6s infinite linear;
-}
-
-@keyframes float {
-  from { transform: translateY(100vh); }
-  to { transform: translateY(-10vh); }
+@keyframes float{
+from{transform:translateY(100vh);}
+to{transform:translateY(-10vh);}
 }
 </style>
 </head>
@@ -52,122 +35,120 @@ td {
 
 <h1>🌙 Ramazan Antigravity</h1>
 
-<div class="box" id="location"></div>
-<div class="box" id="ramazanGunu"></div>
+<div id="clock"></div>
+<div class="box" id="city"></div>
+<div class="box" id="ramazanInfo"></div>
 <div class="box" id="kalanGun"></div>
-<div class="box" id="imsak"></div>
-<div class="box" id="iftar"></div>
-<div id="countdown"></div>
 
-<h2>Ramazan Günleri</h2>
+<div class="box" id="imsak"></div>
+<div id="countdownImsak"></div>
+
+<div class="box" id="iftar"></div>
+<div id="countdownIftar"></div>
+
+<h3>Ramazan Günleri</h3>
 <table id="ramazanTable"></table>
 
 <script>
 
-// 2026 Ramazan başlangıç (güncellenebilir)
-const ramazanStart = new Date("2026-02-18");
-const totalDays = 30;
-const today = new Date();
+// CANLI SAAT
+function updateClock(){
+let now=new Date();
+document.getElementById("clock").innerText=
+now.toLocaleDateString("tr-TR")+" "+now.toLocaleTimeString("tr-TR");
+}
+setInterval(updateClock,1000);
+updateClock();
 
-// Kaçıncı gün
-let diffDays = Math.floor((today - ramazanStart) / (1000*60*60*24)) + 1;
+// RAMAZAN TARİHİ (2026 örnek)
+const ramazanStart=new Date("2026-02-18");
+const totalDays=30;
+let today=new Date();
+let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
 
-if (diffDays > 0 && diffDays <= 30) {
-  document.getElementById("ramazanGunu").innerText =
-    "Ramazanın " + diffDays + ". günü";
-  document.getElementById("kalanGun").innerText =
-    "Bitmesine " + (30 - diffDays) + " gün kaldı";
-} else {
-  document.getElementById("ramazanGunu").innerText =
-    "Ramazan dönemi dışında";
+if(diffDays>0 && diffDays<=30){
+document.getElementById("ramazanInfo").innerText=
+"Ramazanın "+diffDays+". günü";
+document.getElementById("kalanGun").innerText=
+"Bitmesine "+(30-diffDays)+" gün kaldı";
+}else{
+document.getElementById("ramazanInfo").innerText=
+"Ramazan dönemi dışında";
 }
 
-// TABLO OLUŞTUR
-let table = document.getElementById("ramazanTable");
-let row = document.createElement("tr");
-
-for (let i=1; i<=30; i++) {
-  let cell = document.createElement("td");
-  cell.innerText = i;
-
-  if (i < diffDays) {
-    cell.className = "passed";
-    cell.innerText = i + " ✔";
-  } else if (i === diffDays) {
-    cell.className = "today";
-  } else {
-    cell.className = "future";
-  }
-
-  row.appendChild(cell);
-
-  if (i % 10 === 0) {
-    table.appendChild(row);
-    row = document.createElement("tr");
-  }
+// TABLO
+let table=document.getElementById("ramazanTable");
+let row=document.createElement("tr");
+for(let i=1;i<=30;i++){
+let cell=document.createElement("td");
+cell.innerText=i;
+if(i<diffDays){
+cell.className="passed";
+cell.innerText=i+" ✔";
+}else if(i===diffDays){
+cell.className="today";
+}else{
+cell.className="future";
+}
+row.appendChild(cell);
+if(i%10===0){
+table.appendChild(row);
+row=document.createElement("tr");
+}
 }
 
-// KONUM AL
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(pos => {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
+// KONUM + API
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(pos=>{
+const lat=pos.coords.latitude;
+const lon=pos.coords.longitude;
 
-    document.getElementById("location").innerText =
-      "Konum: " + lat.toFixed(2) + ", " + lon.toFixed(2);
+fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
+.then(res=>res.json())
+.then(data=>{
+const timings=data.data.timings;
+const cityName=data.data.meta.timezone;
 
-    fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
-      .then(res => res.json())
-      .then(data => {
-        const imsakTime = data.data.timings.Fajr;
-        const iftarTime = data.data.timings.Maghrib;
+document.getElementById("city").innerText="Şehir: "+cityName;
+document.getElementById("imsak").innerText="İmsak: "+timings.Fajr;
+document.getElementById("iftar").innerText="İftar: "+timings.Maghrib;
 
-        document.getElementById("imsak").innerText =
-          "İmsak: " + imsakTime;
-
-        document.getElementById("iftar").innerText =
-          "İftar: " + iftarTime;
-
-        startCountdown(iftarTime);
-      });
-  });
+startCountdown(timings.Fajr,"countdownImsak");
+startCountdown(timings.Maghrib,"countdownIftar");
+});
+});
 }
 
-function startCountdown(iftarTime) {
-  let parts = iftarTime.split(":");
-  let iftar = new Date();
-  iftar.setHours(parts[0]);
-  iftar.setMinutes(parts[1]);
-  iftar.setSeconds(0);
+function startCountdown(timeStr,elementId){
+let parts=timeStr.split(":");
+setInterval(()=>{
+let now=new Date();
+let target=new Date();
+target.setHours(parts[0]);
+target.setMinutes(parts[1]);
+target.setSeconds(0);
 
-  setInterval(() => {
-    let now = new Date();
-    let diff = iftar - now;
+if(target<now){target.setDate(target.getDate()+1);}
 
-    if (diff > 0) {
-      let h = Math.floor(diff/(1000*60*60));
-      let m = Math.floor((diff/(1000*60))%60);
-      let s = Math.floor((diff/1000)%60);
+let diff=target-now;
+let h=Math.floor(diff/(1000*60*60));
+let m=Math.floor((diff/(1000*60))%60);
+let s=Math.floor((diff/1000)%60);
 
-      document.getElementById("countdown").innerText =
-        h+"s "+m+"d "+s+"sn kaldı";
-    } else {
-      document.getElementById("countdown").innerText =
-        "🌙 İftar vakti!";
-    }
-  },1000);
+document.getElementById(elementId).innerText=
+h+"s "+m+"d "+s+"sn kaldı";
+},1000);
 }
 
-// ANTIGRAVITY YILDIZ
-for (let i=0;i<120;i++){
-  let star=document.createElement("div");
-  star.className="star";
-  star.style.left=Math.random()*100+"vw";
-  star.style.animationDuration=(3+Math.random()*5)+"s";
-  document.body.appendChild(star);
+// ANTIGRAVITY
+for(let i=0;i<120;i++){
+let star=document.createElement("div");
+star.className="star";
+star.style.left=Math.random()*100+"vw";
+star.style.animationDuration=(3+Math.random()*5)+"s";
+document.body.appendChild(star);
 }
 
 </script>
-
 </body>
 </html>

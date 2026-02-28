@@ -173,7 +173,7 @@ kalan.innerText="";
 // LİSTE
 for(let i=1;i<=30;i++){
 let date=new Date(ramazanStart);
-date.setDate(date.getDate()+i-1);
+date.setDate(date.getDate()+i);
 
 let formatted=date.toLocaleDateString("tr-TR",
 {weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});

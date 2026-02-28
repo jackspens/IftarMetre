@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ramazan Antigravity</title>
+<style>
+body {
+  background: radial-gradient(circle at bottom, #0b0c2a, #000);
+  color: white;
+  text-align: center;
+  font-family: Arial;
+  overflow: hidden;
+}
+
+h1 {
+  margin-top: 40px;
+}
+
+#countdown {
+  font-size: 40px;
+  margin-top: 20px;
+}
+
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: white;
+  animation: float 5s infinite linear;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-10vh); }
+}
+</style>
+</head>
+<body>
+
+<h1>Ramazan Antigravity</h1>
+<div id="ramazanGunu"></div>
+<div id="iftarSaati"></div>
+<div id="countdown"></div>
+
+<script>
+// RAMAZAN BAŞLANGIÇ (2026 için örnek)
+const ramazanStart = new Date("2026-02-18");
+const today = new Date();
+
+// Kaçıncı gün
+const diffDays = Math.floor((today - ramazanStart) / (1000*60*60*24)) + 1;
+document.getElementById("ramazanGunu").innerText =
+"Ramazanın " + diffDays + ". günü";
+
+// Örnek iftar saati (İstanbul için sabit demo)
+let iftar = new Date();
+iftar.setHours(18);
+iftar.setMinutes(45);
+iftar.setSeconds(0);
+
+document.getElementById("iftarSaati").innerText =
+"Bugünkü İftar: 18:45";
+
+// Geri sayım
+function updateCountdown() {
+  const now = new Date();
+  const diff = iftar - now;
+
+  if (diff > 0) {
+    const h = Math.floor(diff / (1000*60*60));
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("countdown").innerText =
+      h + "s " + m + "d " + s + "sn kaldı";
+  } else {
+    document.getElementById("countdown").innerText =
+      "İftar vakti geldi 🌙";
+  }
+}
+
+setInterval(updateCountdown, 1000);
+
+// Antigravity yıldız efekti
+for (let i=0; i<100; i++) {
+  let star = document.createElement("div");
+  star.className = "star";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.animationDuration = (3 + Math.random()*5) + "s";
+  document.body.appendChild(star);
+}
+</script>
+
+</body>
+</html>

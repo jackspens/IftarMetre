@@ -162,8 +162,8 @@ const today=new Date();
 let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
 
 if(diffDays>0 && diffDays<=30){
-gun.innerText=diffDays+". Gün";
-kalan.innerText=(30-diffDays)+" Gün";
+gun.innerText=diffDays+". Gün Bitti";
+kalan.innerText=(30-diffDays)+"Gün Kaldı";
 }else{
 gun.innerText="Ramazan Dışı";
 kalan.innerText="";
@@ -192,9 +192,9 @@ ramazanList.appendChild(div);
 
 // ŞEHİRLER
 const cities=[
-"İstanbul","Ankara","İzmir","Adana","Adıyaman","Afyonkarahisar","Ağrı","Aksaray","Amasya",
+"İstanbul","Çanakkale","Ankara","İzmir","Adana","Adıyaman","Afyonkarahisar","Ağrı","Aksaray","Amasya",
 "Antalya","Ardahan","Artvin","Aydın","Balıkesir","Bartın","Batman",
-"Bayburt","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale",
+"Bayburt","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa",
 "Çankırı","Çorum","Denizli","Diyarbakır","Düzce","Edirne","Elazığ",
 "Erzincan","Erzurum","Eskişehir","Gaziantep","Giresun","Gümüşhane",
 "Hakkari","Hatay","Iğdır","Isparta","Kahramanmaraş",

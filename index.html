@@ -10,12 +10,16 @@ background:radial-gradient(circle at bottom,#0b0c2a,#000);
 color:white;
 font-family:Arial;
 text-align:center;
-overflow-x:hidden;
 }
 h1{margin-top:20px;}
-.box{margin:8px;font-size:20px;}
+.box{margin:6px;font-size:20px;}
+select{
+padding:6px;
+font-size:16px;
+margin:10px;
+}
 #clock{font-size:22px;margin:10px;}
-#countdownIftar,#countdownImsak{font-size:22px;margin:10px;}
+#countdownIftar,#countdownImsak{font-size:20px;margin:6px;}
 table{margin:20px auto;border-collapse:collapse;}
 td{border:1px solid #444;padding:8px;width:45px;}
 .passed{background:#1f7a1f;}
@@ -36,7 +40,18 @@ to{transform:translateY(-10vh);}
 <h1>🌙 Ramazan Antigravity</h1>
 
 <div id="clock"></div>
-<div class="box" id="city"></div>
+
+<select id="citySelect">
+<option value="Istanbul">İstanbul</option>
+<option value="Ankara">Ankara</option>
+<option value="Izmir">İzmir</option>
+<option value="Bursa">Bursa</option>
+<option value="Antalya">Antalya</option>
+<option value="Konya">Konya</option>
+<option value="Adana">Adana</option>
+<option value="Gaziantep">Gaziantep</option>
+</select>
+
 <div class="box" id="ramazanInfo"></div>
 <div class="box" id="kalanGun"></div>
 
@@ -60,9 +75,8 @@ now.toLocaleDateString("tr-TR")+" "+now.toLocaleTimeString("tr-TR");
 setInterval(updateClock,1000);
 updateClock();
 
-// RAMAZAN TARİHİ (2026 örnek)
+// RAMAZAN HESAP
 const ramazanStart=new Date("2026-02-18");
-const totalDays=30;
 let today=new Date();
 let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
 
@@ -97,25 +111,28 @@ row=document.createElement("tr");
 }
 }
 
-// KONUM + API
-if(navigator.geolocation){
-navigator.geolocation.getCurrentPosition(pos=>{
-const lat=pos.coords.latitude;
-const lon=pos.coords.longitude;
+// ŞEHİR SEÇİMİ (DEFAULT ISTANBUL)
+let selectedCity=localStorage.getItem("city") || "Istanbul";
+document.getElementById("citySelect").value=selectedCity;
 
-fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
+document.getElementById("citySelect").addEventListener("change",function(){
+localStorage.setItem("city",this.value);
+location.reload();
+});
+
+fetchTimings(selectedCity);
+
+function fetchTimings(city){
+fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Turkey&method=13`)
 .then(res=>res.json())
 .then(data=>{
 const timings=data.data.timings;
-const cityName=data.data.meta.timezone;
 
-document.getElementById("city").innerText="Şehir: "+cityName;
 document.getElementById("imsak").innerText="İmsak: "+timings.Fajr;
 document.getElementById("iftar").innerText="İftar: "+timings.Maghrib;
 
 startCountdown(timings.Fajr,"countdownImsak");
 startCountdown(timings.Maghrib,"countdownIftar");
-});
 });
 }
 

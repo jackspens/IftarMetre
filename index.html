@@ -8,7 +8,7 @@ body{
 margin:0;
 background:radial-gradient(circle at bottom,#0b0c2a,#000);
 color:white;
-font-family:Arial;
+font-family:Tahoma;
 text-align:center;
 }
 
@@ -37,18 +37,32 @@ color:red;
 select{
 margin-top:15px;
 padding:6px;
-font-size:16px;
+font-size:14px;
+font-family:Tahoma;
 }
 
-#imsak,#iftar{
+#imsak{
 margin-top:10px;
 font-size:20px;
 }
 
-#countdownIftar,#countdownImsak{
-font-size:20px;
+#countdownImsak{
+margin-top:10px;
+font-size:24px;
+color: red;
+}
+
+#iftar{
+margin-top:10px;
+font-size:24px;
+color: blue;
+}
+
+#countdownIftar{
+font-size:22px;
 margin-bottom:10px;
 color: green;
+font-family:Tahoma;
 }
 
 #ramazanList{
@@ -57,6 +71,8 @@ max-width:500px;
 margin:20px auto;
 text-align:left;
 }
+
+#clock{font-size:22px;margin:10px;}
 
 .dayItem{
 padding:6px;
@@ -83,26 +99,54 @@ to{transform:translateY(-10vh);}
 </head>
 <body>
 
-<h1>🌙 Ramazan Antigravity</h1>
+<h1>🌙 IftarMetre by Ersin Ucan</h1>
 
 <div id="topInfo">
 <div id="gun"></div>
 <div id="kalan"></div>
 </div>
 
+<div id="clock"></div>
+
 <div id="iftar"></div>
 <div id="countdownIftar"></div>
 
-<select id="citySelect"></select>
+<div> -------- </div>
 
 <div id="imsak"></div>
 <div id="countdownImsak"></div>
 
+<select id="citySelect"></select>
 
 <h2>Ramazan Günleri</h2>
 <div id="ramazanList"></div>
 
 <script>
+
+// CANLI SAAT
+function updateClock(){
+let now=new Date();
+document.getElementById("clock").innerText=
+now.toLocaleDateString("tr-TR")+" "+now.toLocaleTimeString("tr-TR");
+}
+setInterval(updateClock,1000);
+updateClock();
+
+// RAMAZAN TARİHİ (2026 örnek)
+const ramazanStart=new Date("2026-02-18");
+const totalDays=30;
+let today=new Date();
+let diffDays=Math.floor((today-ramazanStart)/(1000*60*60*24))+1;
+
+if(diffDays>0 && diffDays<=30){
+document.getElementById("ramazanInfo").innerText=
+"Ramazanın "+diffDays+". günü";
+document.getElementById("kalanGun").innerText=
+"Bitmesine "+(30-diffDays)+" gün kaldı";
+}else{
+document.getElementById("ramazanInfo").innerText=
+"Ramazan dönemi dışında";
+}
 
 // TÜM İLLER
 const cities = [
